@@ -19,9 +19,12 @@
   },
   "homepage": "https://github.com/cml2021/cs-361-microservice#readme",
   "dependencies": {
+    "better-random-words": "^1.0.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsencrypt": "^3.3.2",
     "nodemon": "^2.0.22"
   }
 }

@@ -1,3 +1,5 @@
+import generateEncryptedKeyMessage from './key-manager.js';
+
 // Setup 
 import express from 'express';
 import cors from 'cors';
@@ -12,8 +14,14 @@ app.use(cors());
 const PORT = process.env.PORT;
 
 // Endpoints
-app.post('/test', (req, res) => {
-    res.send(req.body);
+app.get('/', (req, res) => {
+    res.send('Hello world!')
+});
+
+app.post('/', (req, res) => {
+    // call manager
+    // return encrypted message and AES key
+    res.send('Response');
 });
 
 app.listen(PORT, () => {
