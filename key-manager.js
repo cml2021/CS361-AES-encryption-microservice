@@ -3,75 +3,103 @@ import JSEncrypt from 'node-jsencrypt';
 import randomWords from 'better-random-words';
 
 /* Generates a RSA public key for testing purposes in JSON */
-const genPublicKey = () => {
-    const encryptor = new JSEncrypt({default_key_size: 4096});
-    let publicKey = encryptor.getPublicKey();
-    publicKey = JSON.stringify(publicKey);
+const genPublicKey = async () => {
+    try {
+        const encryptor = await new JSEncrypt({default_key_size: 4096});
+        let publicKey = await encryptor.getPublicKey();
+        publicKey = JSON.stringify(publicKey);
 
-    return publicKey;
+        return publicKey;
+    }
+    catch(err) {
+        console.log(`Error generating public key: ${err}`);
+    }
 }
 
 /* Generates a random AES key */
 const genKey = () => {
-    const keyArr = CryptoJS.lib.WordArray.random(32);       // generate a random 256-bit key
-    const key = keyArr.toString(CryptoJS.enc.Base64);       // convert to Base64  
+    try {
+        const keyArr = CryptoJS.lib.WordArray.random(32);       // generate a random 256-bit key
+        const key = keyArr.toString(CryptoJS.enc.Base64);       // convert to Base64  
 
-    return key;
+        return key;
+    }
+    catch(err) {
+        console.log(`Error generating AES key: ${err}`);
+    }
 }
 
 /* Encrypts a key with a public key */
-const encryptKey = (key, publicKey) => {
-    const encryptor = new JSEncrypt();
-    encryptor.setPublicKey(publicKey);
-    const encryptedKey = encryptor.encrypt(key);
+const encryptKey = async (key, publicKey) => {
+    try {
+        const encryptor = await new JSEncrypt();
+        await encryptor.setPublicKey(publicKey);
+        const encryptedKey = await encryptor.encrypt(key);
 
-    return encryptedKey;
+        return encryptedKey;
+    }
+    catch(err) {
+        console.log(`Error encrypting key: ${err}`);
+    }
 }
 
 /* Generates a random message string */
 const genMessage = () => {
-    const min = 4;
-    const max = 11;
-    const numWords = Math.random() * (max - min) + min;
+    try {
+        const min = 4;
+        const max = 11;
+        const numWords = Math.random() * (max - min) + min;
 
-    let message = '';
-    for (let i = 0; i < numWords; i++) {
-        message = randomWords() + ' ' + message;
+        let message = '';
+        for (let i = 0; i < numWords; i++) {
+            message = randomWords() + ' ' + message;
+        }
+
+        return message;
     }
-
-    return message;
+    catch(err) {
+        console.log(`Error generating random message: ${err}`);
+    }
 }
 
 /* Encrypts a message with an AES key string */
 const encryptMessage = (message, key) => {
-    const encryptedMessage = CryptoJS.AES.encrypt(
-        message,
-        key
-    );
+    try {
+        const encryptedMessage = CryptoJS.AES.encrypt(
+            message,
+            key
+        );
 
-    return encryptedMessage;
+        return encryptedMessage;
+    }
+    catch(err) {
+        console.log(`Error encrypting message: ${err}`);
+    }
 }
 
-const generateEncryptedKeyMessage = (publicKey) => {
-    // generate AES key
-    const key = genKey();
+/* Returns an encrypted AES key and message */
+const generateEncryptedKeyMessage = async (publicKey) => {
+    try {
+        // generate AES key
+        const key = genKey();
 
-    // use public key to encrypt AES key
-    const encryptedKey = encryptKey(key, publicKey);
+        // use public key to encrypt AES key
+        const encryptedKey = await encryptKey(key, publicKey);
 
-    // generate random message
-    const message = genMessage();
+        // generate random message
+        const message = genMessage();
 
-    // encrypt message with AES key
-    const encryptedMessage = encryptMessage(message, key);
+        // encrypt message with AES key
+        const encryptedMessage = encryptMessage(message, key);
 
-    // return encrypted AES key and message
-    return encryptedKey, encryptedMessage;
+        // return encrypted AES key and message
+        return [encryptedKey, encryptedMessage];
+    }
+    catch(err) {
+        return [1, 1];
+    }
 }
 
 export default generateEncryptedKeyMessage;
 
 export {genPublicKey};
-
-// Testing
-genPublicKey();

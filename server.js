@@ -1,9 +1,10 @@
-import generateEncryptedKeyMessage, {genPublicKey} from './key-manager.js';
-
 // Setup 
 import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
+import generateEncryptedKeyMessage, {genPublicKey} from './key-manager.js';
+import asyncHandler from 'express-async-handler';
+import {parse, stringify, toJSON, fromJSON} from 'flatted';
 
 dotenv.config();
 
@@ -13,18 +14,36 @@ app.use(cors());
 
 const PORT = process.env.PORT;
 
+
 // Endpoints
 app.get('/', (req, res) => {
     res.send('Hello world!')
 });
 
-app.post('/', (req, res) => {
-    let publicKey = req.body.publicKey;
-    publicKey = JSON.parse(publicKey);
-    console.log(publicKey);
+app.post('/', asyncHandler(async (req, res) => {
+    const data = req.body;
+    const publicKey = data['publicKey'];
+    
+    if (publicKey !== null || publicKey != undefined) {
+        const [encryptedKey, encryptedMessage] = await generateEncryptedKeyMessage(publicKey);
+        
+        if (encryptedKey === 1) {
+            res.status(500);
+            throw new Error('Server error');
 
-    res.send('Response');
-});
+        } else {
+            console.log('encryptedKey: ', encryptedKey)
+
+            console.log('encryptedMessage: ', encryptedMessage)
+
+            res.send('cool');
+        }
+
+    } else {
+        res.status(404);
+        throw new Error('Bad request');
+    }
+}));
 
 app.listen(PORT, () => {
     console.log(`Server started on PORT ${PORT}...`);
