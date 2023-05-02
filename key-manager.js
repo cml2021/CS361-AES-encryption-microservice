@@ -1,12 +1,20 @@
-import Base64 from 'crypto-js/enc-base64.js';
-import WordArray from 'crypto-js/lib-typedarrays.js';
-import { JSEncrypt } from 'jsencrypt';
+import CryptoJS from 'crypto-js';
+import JSEncrypt from 'node-jsencrypt';
 import randomWords from 'better-random-words';
+
+/* Generates a RSA public key for testing purposes in JSON */
+const genPublicKey = () => {
+    const encryptor = new JSEncrypt({default_key_size: 4096});
+    let publicKey = encryptor.getPublicKey();
+    publicKey = JSON.stringify(publicKey);
+
+    return publicKey;
+}
 
 /* Generates a random AES key */
 const genKey = () => {
-    const keyArr = WordArray.random(32);       // generate a random 256-bit key
-    const key = keyArr.toString(Base64);       // convert to Base64  
+    const keyArr = CryptoJS.lib.WordArray.random(32);       // generate a random 256-bit key
+    const key = keyArr.toString(CryptoJS.enc.Base64);       // convert to Base64  
 
     return key;
 }
@@ -24,7 +32,7 @@ const encryptKey = (key, publicKey) => {
 const genMessage = () => {
     const min = 4;
     const max = 11;
-    numWords = Math.random() * (max - min) + min;
+    const numWords = Math.random() * (max - min) + min;
 
     let message = '';
     for (let i = 0; i < numWords; i++) {
@@ -34,7 +42,7 @@ const genMessage = () => {
     return message;
 }
 
-/* Encrypts a message with an AES key */
+/* Encrypts a message with an AES key string */
 const encryptMessage = (message, key) => {
     const encryptedMessage = CryptoJS.AES.encrypt(
         message,
@@ -47,25 +55,23 @@ const encryptMessage = (message, key) => {
 const generateEncryptedKeyMessage = (publicKey) => {
     // generate AES key
     const key = genKey();
-    console.log('key: ', key)
 
     // use public key to encrypt AES key
     const encryptedKey = encryptKey(key, publicKey);
-    console.log('encrypted key: ', encryptedKey);
 
     // generate random message
     const message = genMessage();
-    console.log('message: ', message);
 
     // encrypt message with AES key
     const encryptedMessage = encryptMessage(message, key);
-    console.log('encrypted message: ', encryptedMessage);
 
     // return encrypted AES key and message
     return encryptedKey, encryptedMessage;
 }
 
-// TESTING
-generateEncryptedKeyMessage('abc');
-
 export default generateEncryptedKeyMessage;
+
+export {genPublicKey};
+
+// Testing
+genPublicKey();

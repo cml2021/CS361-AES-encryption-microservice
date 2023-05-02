@@ -1,4 +1,4 @@
-import generateEncryptedKeyMessage from './key-manager.js';
+import generateEncryptedKeyMessage, {genPublicKey} from './key-manager.js';
 
 // Setup 
 import express from 'express';
@@ -19,8 +19,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-    // call manager
-    // return encrypted message and AES key
+    let publicKey = req.body.publicKey;
+    publicKey = JSON.parse(publicKey);
+    console.log(publicKey);
+
     res.send('Response');
 });
 
