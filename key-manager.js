@@ -90,7 +90,7 @@ const generateEncryptedKeyMessage = async (publicKey) => {
         const message = genMessage();
 
         // encrypt message with AES key
-        const encryptedMessage = encryptMessage(message, key);
+        const encryptedMessage = encryptMessage(message, key).toString();
 
         // return encrypted AES key and message
         return [encryptedKey, encryptedMessage];

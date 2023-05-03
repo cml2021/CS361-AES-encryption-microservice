@@ -32,11 +32,12 @@ app.post('/', asyncHandler(async (req, res) => {
             throw new Error('Server error');
 
         } else {
-            console.log('encryptedKey: ', encryptedKey)
+            const response = {
+                'encryptedKey': encryptedKey,
+                'encryptedMessage': encryptedMessage
+            }
 
-            console.log('encryptedMessage: ', encryptedMessage)
-
-            res.send('cool');
+            res.status(201).send(response);
         }
 
     } else {
