@@ -35,3 +35,8 @@ Upon success, the microservice will respond to the POST request with a response 
 }
 ```
 
+## UML Diagram
+
+![Microservice UML diagram(1)](https://user-images.githubusercontent.com/72637386/236264216-42604ec7-b705-4b30-99ca-a5919c56c971.png)
+
+
