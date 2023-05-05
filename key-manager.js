@@ -46,8 +46,8 @@ const encryptKey = async (key, publicKey) => {
 /* Generates a random message string */
 const genMessage = () => {
     try {
-        const min = 4;
-        const max = 11;
+        const min = 500;
+        const max = 1000;
         const numWords = Math.random() * (max - min) + min;
 
         let message = '';
